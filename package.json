@@ -1,0 +1,46 @@
+{
+  "name": "react-rrule-input",
+  "version": "1.0.0",
+  "description": "React component for creating and inputting RRules",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/totallyrin/react-rrule-input.git"
+  },
+  "keywords": [
+    "react",
+    "rrule",
+    "input"
+  ],
+  "author": "Lucy Woloszczuk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/totallyrin/react-rrule-input/issues"
+  },
+  "homepage": "https://github.com/totallyrin/react-rrule-input#readme",
+  "devDependencies": {
+    "@mui/material": "^5.15.15",
+    "date-fns": "^3.6.0",
+    "date-fns-tz": "^3.1.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "rrule": "^2.8.1"
+  },
+  "dependencies": {
+    "@babel/core": "^7.24.5",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@types/react": "^18.3.1",
+    "rollup": "^4.17.2",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "typescript": "^5.4.5"
+  }
+}
