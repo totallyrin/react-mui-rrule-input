@@ -18,7 +18,9 @@ export default [
         exports: 'named',
       }
     ],
+    external: ['react', 'react/jsx-runtime', 'react-is', '@mui/material', '@emotion/react', '@emotion/styled'],
     plugins: [
+      resolve(),
       babel({
         exclude: 'node_modules/**',
         presets: ['@babel/preset-react']
@@ -26,9 +28,9 @@ export default [
       external({
         includeDependencies: true
       }),
-      resolve(),
       terser(),
-      typescript({ useTsconfigDeclarationDir: true }),
-    ]
+      typescript({ useTsconfigDeclarationDir: true,
+      tsconfig: './tsconfig.json'}),
+    ],
   }
 ];
