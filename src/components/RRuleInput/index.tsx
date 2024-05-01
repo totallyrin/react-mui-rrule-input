@@ -8,7 +8,9 @@ import {
   Radio,
   RadioGroup,
   Select,
+  SxProps,
   TextField,
+  Theme,
   ThemeProvider,
   ToggleButton,
   ToggleButtonGroup,
@@ -18,7 +20,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Frequency, Options, RRule } from "rrule";
 import { format } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
-import { getOrdinalNumber, rruleToReadable } from "@/utils/utils";
+import { getOrdinalNumber, rruleToReadable } from "./utils";
 
 const defaultTheme = createTheme();
 
@@ -26,10 +28,14 @@ export default function RRuleInput({
   setDisplayText,
   rrule,
   setRRule,
+  theme = defaultTheme,
+  sx = {},
 }: {
   setDisplayText: React.Dispatch<React.SetStateAction<string>>;
   rrule: string;
   setRRule: React.Dispatch<React.SetStateAction<string>>;
+  theme?: Theme;
+  sx?: SxProps<Theme>;
 }) {
   const [repeatEvery, setRepeatEvery] = useState(1);
   const [repeatType, setRepeatType] = useState("weekly");
@@ -159,13 +165,14 @@ export default function RRuleInput({
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider theme={theme}>
       <Box
         sx={{
           pt: 1,
           display: "flex",
           flexDirection: "column",
           gap: 1,
+          ...sx,
         }}
       >
         <FormControl>
