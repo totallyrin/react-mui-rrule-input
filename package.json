@@ -14,7 +14,9 @@
   "keywords": [
     "react",
     "rrule",
-    "input"
+    "input",
+    "mui",
+    "react-component"
   ],
   "author": "Lucy Woloszczuk",
   "license": "ISC",
