@@ -4,6 +4,8 @@ React component using MUI for creating and inputting RRules. Designed to create 
 ## Images
 ![image](https://github.com/totallyrin/react-mui-rrule-input/assets/1056415/115dae67-d2d3-4712-a8eb-cd673598b464)
 ![image](https://github.com/totallyrin/react-mui-rrule-input/assets/1056415/20a96ada-e196-43ce-b5e8-f555475093bf)
+![image](https://github.com/totallyrin/react-mui-rrule-input/assets/1056415/5ff5471a-9be4-4342-a95b-6c56faa1ece2)
+![image](https://github.com/totallyrin/react-mui-rrule-input/assets/1056415/d3c84394-a886-4296-8a64-6ca23f0d244e)
 
 ## Installation
 You can install this package using npm:
