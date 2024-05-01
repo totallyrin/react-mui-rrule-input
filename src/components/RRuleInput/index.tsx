@@ -370,7 +370,7 @@ export default function RRuleInput({
                   onChange={(e) => setOccurrences(Number(e.target.value))}
                   sx={{ maxWidth: "100px" }}
                 />
-                <Typography>Ocurrences</Typography>
+                <Typography>ocurrences</Typography>
               </>
             )}
           </Box>
