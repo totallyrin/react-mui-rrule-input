@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  createTheme,
   FormControl,
   InputLabel,
   MenuItem,
@@ -8,118 +9,38 @@ import {
   RadioGroup,
   Select,
   TextField,
+  ThemeProvider,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
-import { Frequency, Options, RRule, rrulestr } from "rrule";
+import { Frequency, Options, RRule } from "rrule";
 import { format } from "date-fns";
-import {
-  // utcToZonedTime, zonedTimeToUtc,
-  fromZonedTime, toZonedTime } from "date-fns-tz";
+import { fromZonedTime, toZonedTime } from "date-fns-tz";
+import { getOrdinalNumber, rruleToReadable } from "@/utils/utils";
 
-export function rruleToReadable(rruleStr: string) {
-  const rule = rrulestr(rruleStr);
-
-  let readableStr = "Repeats ";
-
-  switch (rule.options.freq) {
-    case RRule.DAILY:
-      readableStr +=
-        rule.options.interval === 1
-          ? "daily "
-          : `every ${rule.options.interval} days `;
-      break;
-    case RRule.WEEKLY:
-      readableStr +=
-        rule.options.interval === 1
-          ? "weekly "
-          : `every ${rule.options.interval} weeks `;
-
-      if (rule.options.byweekday) {
-        const weekdays = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
-        const selectedDays = rule.options.byweekday.map((day) => weekdays[day]);
-        const orderedSelectedDays = weekdays.filter((day) =>
-          selectedDays.includes(day)
-        );
-        readableStr += `on ${orderedSelectedDays.join(", ")} `;
-      }
-      break;
-    case RRule.MONTHLY:
-      readableStr +=
-        rule.options.interval === 1
-          ? "monthly "
-          : `every ${rule.options.interval} months `;
-      if (rule.options.bymonthday && rule.options.bymonthday.length > 0) {
-        readableStr += `on the ${rule.options.bymonthday
-          .map((day) => getOrdinalNumber(day))
-          .join(", ")} of the month `;
-      }
-      if (rule.options.bysetpos && rule.options.bysetpos.length > 0) {
-        const freq = rule.options.bysetpos[0];
-        const frequencies = ["first", "second", "third", "fourth"];
-        const weekday = rule.options.byweekday[0];
-        const weekdays = [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-          "Sunday",
-        ];
-
-        readableStr += `on the ${freq < 1 ? "last" : frequencies[freq - 1]} ${
-          weekdays[weekday]
-        } of the month `;
-      }
-      break;
-  }
-  if (rule.options.count) {
-    readableStr += `for ${rule.options.count} ${
-      rule.options.count === 1 ? "occurrence" : "occurrences"
-    } `;
-  }
-  if (rule.options.dtstart) {
-    readableStr += `starting ${format(rule.options.dtstart, "yyyy-MM-dd")} `;
-  }
-
-  if (rule.options.until) {
-    readableStr += `until ${format(rule.options.until, "yyyy-MM-dd")} `;
-  }
-  return readableStr;
-}
-
-// Helper function to get ordinal number (1st, 2nd, 3rd, etc.)
-function getOrdinalNumber(number: number): string {
-  const suffixes = ["th", "st", "nd", "rd"];
-  const remainder = number % 100;
-  const suffix =
-    suffixes[(remainder - 20) % 10] || suffixes[remainder] || suffixes[0];
-  return number.toString() + suffix;
-}
-
-type RecurringSectionProps = {
-  setDisplayText: React.Dispatch<React.SetStateAction<string>>;
-  rrule: string;
-  setRRule: React.Dispatch<React.SetStateAction<string>>;
-};
+const defaultTheme = createTheme();
 
 export default function RRuleInput({
   setDisplayText,
   rrule,
   setRRule,
-}: RecurringSectionProps) {
+}: {
+  setDisplayText: React.Dispatch<React.SetStateAction<string>>;
+  rrule: string;
+  setRRule: React.Dispatch<React.SetStateAction<string>>;
+}) {
   const [repeatEvery, setRepeatEvery] = useState(1);
   const [repeatType, setRepeatType] = useState("weekly");
   const [repeatOn, setRepeatOn] = useState<string[]>([]);
   const [ends, setEnds] = useState("never");
   const [startDate, setStartDate] = useState(
-    // format(zonedTimeToUtc(new Date(), "UTC"), "yyyy-MM-dd")
-    format(fromZonedTime(new Date(), "UTC"), "yyyy-MM-dd")
+    format(fromZonedTime(new Date(), "UTC"), "yyyy-MM-dd"),
   );
-  const [endDate, setEndDate] = useState("");
+  const [endDate, setEndDate] = useState(
+    format(fromZonedTime(new Date(), "UTC"), "yyyy-MM-dd"),
+  );
   const [occurrences, setOccurrences] = useState(1);
   const [day, setDay] = useState([1]);
   const [weekday, setWeekday] = useState(0);
@@ -130,7 +51,7 @@ export default function RRuleInput({
 
   const daysOfWeek = useMemo(
     () => ["MO", "TU", "WE", "TH", "FR", "SA", "SU"],
-    []
+    [],
   );
 
   // Function to get the frequency based on setpos (e.g., "First", "Second", ...)
@@ -179,32 +100,32 @@ export default function RRuleInput({
       setRepeatType(
         typeof options.freq === "number"
           ? getFrequencyType(options.freq)
-          : "weekly"
+          : "weekly",
       );
       setRepeatOn(options.byweekday?.map((day) => daysOfWeek[day]) || []);
       setEnds(options.until ? "on" : options.count ? "after" : "never");
       setStartDate(
         options.dtstart
-          // ? format(utcToZonedTime(options.dtstart, timezone), "yyyy-MM-dd")
-          ? format(toZonedTime(options.dtstart, timezone), "yyyy-MM-dd")
-          : ""
+          ? // ? format(utcToZonedTime(options.dtstart, timezone), "yyyy-MM-dd")
+            format(toZonedTime(options.dtstart, timezone), "yyyy-MM-dd")
+          : "",
       );
       setEndDate(
         options.until
-          // ? format(utcToZonedTime(options.until, timezone), "yyyy-MM-dd")
-          ? format(toZonedTime(options.until, timezone), "yyyy-MM-dd")
-          : ""
+          ? // ? format(utcToZonedTime(options.until, timezone), "yyyy-MM-dd")
+            format(toZonedTime(options.until, timezone), "yyyy-MM-dd")
+          : "",
       );
       setOccurrences(options.count || 1);
       setDay(
         options.bymonthday && options.bymonthday.length > 0
           ? options.bymonthday
-          : [1]
+          : [1],
       );
       setWeekday(
         options.freq === RRule.MONTHLY && options.byweekday
           ? options.byweekday[0]
-          : 0
+          : 0,
       );
       setFreq(options.bysetpos?.length > 0 ? options.bysetpos[0] : 1);
       setMonthOption(options.bysetpos?.length > 0 ? 1 : 0);
@@ -221,28 +142,24 @@ export default function RRuleInput({
             ? repeatOn.map((day) => daysOfWeek.indexOf(day))
             : undefined
           : repeatType === "monthly"
-          ? [weekday]
-          : undefined,
-      // until: ends === "on" ? zonedTimeToUtc(endDate, timezone) : undefined,
+            ? [weekday]
+            : undefined,
       until: ends === "on" ? fromZonedTime(endDate, timezone) : undefined,
       count: ends === "after" ? occurrences : undefined,
       bymonthday:
         repeatType === "monthly" && monthOption === 0 ? day : undefined,
       bysetpos:
         repeatType === "monthly" && monthOption === 1 ? freq : undefined,
-      // dtstart: zonedTimeToUtc(startDate, timezone),
       dtstart: fromZonedTime(startDate, timezone),
-      // tzid: Intl.DateTimeFormat().resolvedOptions().timeZone, // "America/New_York",
     };
 
     const rule = new RRule(options);
     setDisplayText(rruleToReadable(rule.toString()));
-    // setDisplayText(rule.toText());
     return rule.toString();
   };
 
   return (
-    <>
+    <ThemeProvider theme={defaultTheme}>
       <Box
         sx={{
           pt: 1,
@@ -454,13 +371,12 @@ export default function RRuleInput({
         <Button
           variant="contained"
           onClick={() => {
-            // console.log(generateRRule());
             setRRule(generateRRule());
           }}
         >
           Save Recurrence Rule
         </Button>
       </Box>
-    </>
+    </ThemeProvider>
   );
 }
