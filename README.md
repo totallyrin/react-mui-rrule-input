@@ -21,7 +21,7 @@ yarn add react-mui-rrule-input
 ## Usage
 ```js
 import React, { useState } from 'react';
-import RRuleInput from 'rrule-generator-input';
+import RRuleInput from 'react-mui-rrule-input';
 
 function MyApp() {
   const [displayText, setDisplayText] = useState('');
